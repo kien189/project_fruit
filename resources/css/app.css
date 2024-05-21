@@ -1,0 +1,13 @@
+.option-button {
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.option-button.active {
+    background-color: #007bff;
+    color: white;
+}

@@ -1,0 +1,133 @@
+<form role="form" method="POST" action="{{ route('product.store') }}"
+                            enctype="multipart/form-data">
+                            @csrf
+                            <div class="box-body">
+                                <!-- Tên sản phẩm -->
+                                <div class="form-group">
+                                    <label for="productName">Tên sản phẩm</label>
+                                    <input type="text" class="form-control" id="productName" name="name"
+                                        onkeyup="ChangeToSlug()">
+                                </div>
+                                <!-- Đường dẫn Slug -->
+                                <div class="form-group">
+                                    <label for="slug">Đường dẫn Slug</label>
+                                    <input type="text" class="form-control" id="slug" name="slug">
+                                </div>
+                                <!-- Giá sản phẩm -->
+                                {{-- <div class="form-group">
+                                    <label for="price">Giá sản phẩm</label>
+                                    <input type="text" class="form-control" id="price" name="price">
+                                </div>
+                                <!-- Giá khuyến mãi -->
+                                <div class="form-group">
+                                    <label for="sale_price">Giá khuyến mãi</label>
+                                    <input type="text" class="form-control" id="sale_price" name="sale_price">
+                                </div> --}}
+                                <!-- Ảnh sản phẩm -->
+                                <div class="form-group">
+                                    <label for="photo">Ảnh sản phẩm</label>
+                                    <input type="file" class="form-control" id="photo" name="photo"
+                                        onchange="readURL(this)">
+                                    <img src="" alt="" id="Show_images" width="50%">
+                                </div>
+                                <!-- Ảnh mô tả -->
+                                <div class="form-group">
+                                    <label for="photos">Ảnh mô tả</label>
+                                    <input type="file" class="form-control" id="photos" name="photos[]" multiple
+                                        onchange="showImg(this)">
+                                    <hr>
+                                    <div class="row" id="Show_IMG"></div>
+                                </div>
+                                <!-- Danh mục -->
+                                <div class="form-group">
+                                    <label for="category_id">Chọn danh mục</label>
+                                    <select name="category_id" id="category_id" class="form-control">
+                                        @foreach ($categories as $category)
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <!-- Mô tả sản phẩm -->
+                                <div class="form-group">
+                                    <label for="description">Mô tả sản phẩm</label>
+                                    <textarea name="description" id="description" class="form-control" rows="3"></textarea>
+                                </div>
+                                <!-- FEATURED PRODUCTS -->
+                                <div class="form-group">
+                                    <label for="stock">FEATURED PRODUCTS</label>
+                                    <input type="checkbox" id="stock" name="stock" value="1">
+                                </div>
+
+                                <!-- Chi tiết của biến thể sản phẩm -->
+                                <div class="variant-fields">
+                                    <div class="form-group">
+                                        <label for="variantSize">Kích thước</label>
+                                        <input type="text" class="form-control" id="variantSize"
+                                            name="variants[0][size]">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="variantPrice">Giá</label>
+                                        <input type="text" class="form-control" id="variantPrice"
+                                            name="variants[0][price]">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="variantPrice">Giá khuyến mãi</label>
+                                        <input type="text" class="form-control" id="variantPrice"
+                                            name="variants[0][sale_price]">
+                                    </div>
+                                </div>
+                                <div id="variantContainer"></div>
+                                <!-- Container để thêm các trường dữ liệu của các biến thể sản phẩm -->
+                                <button type="button" class="btn btn-success" id="addVariant">Thêm biến thể</button>
+
+                                <!-- Nút submit -->
+                                <div class="box-footer">
+                                    <button type="submit" class="btn btn-primary">Thêm mới</button>
+                                </div>
+                            </div>
+                        </form>
+
+                         <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Counter để đếm số lượng biến thể đã được thêm vào form
+            var variantCounter = 0;
+
+            // Lắng nghe sự kiện khi người dùng nhấn vào nút "Thêm biến thể"
+            document.getElementById("addVariant").addEventListener("click", function() {
+                // Tăng biến đếm lên mỗi khi thêm biến thể mới
+                variantCounter++;
+
+                // Tạo ra các trường dữ liệu của biến thể và thêm vào container
+                var variantContainer = document.getElementById("variantContainer");
+                var variantFields = document.createElement("div");
+                variantFields.className = "variant-fields";
+
+                // Trường kích thước
+                var sizeInput = document.createElement("div");
+                sizeInput.className = "form-group";
+                sizeInput.innerHTML = '<label for="variantSize' + variantCounter + '">Kích thước</label>' +
+                    '<input type="text" class="form-control" id="variantSize' + variantCounter +
+                    '" name="variants[' + variantCounter + '][size]">';
+
+                // Trường giá
+                var priceInput = document.createElement("div");
+                priceInput.className = "form-group";
+                priceInput.innerHTML = '<label for="variantPrice' + variantCounter + '">Giá</label>' +
+                    '<input type="text" class="form-control" id="variantPrice' + variantCounter +
+                    '" name="variants[' + variantCounter + '][price]">';
+
+                // Trường giá khuyến mãi
+                var salePriceInput = document.createElement("div");
+                salePriceInput.className = "form-group";
+                salePriceInput.innerHTML = '<label for="variantSalePrice' + variantCounter +
+                    '">Giá khuyến mãi</label>' +
+                    '<input type="text" class="form-control" id="variantSalePrice' + variantCounter +
+                    '" name="variants[' + variantCounter + '][sale_price]">';
+
+                variantFields.appendChild(sizeInput);
+                variantFields.appendChild(priceInput);
+                variantFields.appendChild(salePriceInput);
+                variantContainer.appendChild(variantFields);
+            });
+        });
+    </script>

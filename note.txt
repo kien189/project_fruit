@@ -1,0 +1,6 @@
+Các công việc cần làm hôm mày :
+Tạo middlwave admin
+Thêm chức năng hủy đơn hàng
+Chức năng Blog
+Quản lý bình luận
+Quàn lý đơn hàng 
