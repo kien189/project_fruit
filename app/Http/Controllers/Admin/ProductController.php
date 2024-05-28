@@ -21,7 +21,7 @@ class ProductController extends Controller
     public function index(Category $category)
     {
         $categories = Category::all();
-        $products = Product::orderBy("id", "desc")->paginate(10);
+        $products = Product::with('variants')->get();
         return view("Admin.Product.list", compact("products", "categories", "category"));
     }
 
@@ -39,51 +39,39 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all()); // Kiểm tra dữ liệu nhận được
-
-        // Kiểm tra và lưu trữ ảnh chính
+        // Lấy tên của file hình ảnh từ request
         $fileName = $request->photo->getClientOriginalName();
+
+        // Lưu trữ hình ảnh vào thư mục 'public/images' với tên là $fileName
         $request->photo->storeAs('public/images', $fileName);
+
+        // Thêm tên file hình ảnh vào dữ liệu của request
         $request->merge(['image' => $fileName]);
 
         try {
-            // Tạo sản phẩm mới
-            $product = Product::create($request->all());
+            // Tạo một sản phẩm mới trong cơ sở dữ liệu sử dụng dữ liệu từ request
+            $product = Product::create($request->only("name", "slug", "image", "category_id", "description", "status"));
 
-            // Kiểm tra và lưu trữ ảnh phụ
-            if ($product && $request->hasFile("photos")) {
-                foreach ($request->file("photos") as $photo) {
-                    $fileName = $photo->getClientOriginalName();
-                    $photo->storeAs("public/images", $fileName);
-                    ProductImages::create([
-                        "product_id" => $product->id,
-                        "image" => $fileName,
-                    ]);
-                }
+            // Duyệt qua mảng các biến thể của sản phẩm từ request và tạo mới các biến thể trong cơ sở dữ liệu
+            foreach ($request->variants as $variantData) {
+                $variant = [
+                    'size' => $variantData['size'],
+                    'price' => $variantData['price'],
+                    'sale_price' => $variantData['sale_price'],
+                ];
+                $product->variants()->create($variant);
             }
 
-            // Tạo biến thể sản phẩm
-            if ($product && $request->has('variants')) {
-                foreach ($request->variants as $variant) {
-                    // Kiểm tra dữ liệu biến thể
-                    if (isset($variant['size']) && isset($variant['price']) && isset($variant['sale_price'])) {
-                        product_variants::create([
-                            "product_id" => $product->id, // Thiết lập product_id từ sản phẩm vừa tạo
-                            "size" => $variant['size'],
-                            "price" => $variant['price'],
-                            "sale_price" => $variant['sale_price'],
-                        ]);
-                    }
-                }
-            }
-
-            return redirect()->route("product.index")->with("success", "Thêm mới sản phẩm thành công");
+            // Chuyển hướng người dùng về trang danh sách sản phẩm và hiển thị thông báo thành công
+            return redirect()->route('product.index')->with('success', 'Thêm mới sản phẩm thành công');
         } catch (\Throwable $th) {
-            // Bắt lỗi và hiển thị thông báo
+            // Nếu có lỗi xảy ra trong quá trình xử lý, hiển thị thông báo lỗi và quay trở lại trang trước đó
             dd($th->getMessage());
-            return redirect()->back()->with("error", "Thêm mới sản phẩm thất bại: " . $th->getMessage());
+            return back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
         }
     }
+
+
 
 
 

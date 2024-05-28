@@ -99,47 +99,50 @@
                                         <span class="help-block">{{ $message }}</span>
                                     @enderror
                                 </div>
-                                <div class="variant-fields">
-                                    <div class="form-group">
-                                        <label for="variantSize">Kích thước</label>
-                                        <input type="text" class="form-control" id="variantSize" name="variants[size]">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="variantPrice">Giá</label>
-                                        <input type="text" class="form-control" id="variantPrice" name="variants[price]">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="variantSalePrice">Giá khuyến mãi</label>
-                                        <input type="text" class="form-control" id="variantSalePrice" name="variants[sale_price]">
-                                    </div>
-                                </div>
-                                <div id="variantContainer"></div>
-                                <!-- Container để thêm các trường dữ liệu của các biến thể sản phẩm -->
-                                <button type="button" class="btn btn-success" id="addVariant">Thêm biến thể</button>
+                                <div id="variants">
 
-
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">FEATURED PRODUCTS</label>
-                                    <input type="checkbox" id="exampleInputEmail1" name="stock" value="1">
+                                        <div id="form-group">
+                                            <label for="variantSize">Kích thước</label>
+                                            <input type="text" class="form-control" name="variants[0][size]">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="variantPrice">Giá</label>
+                                            <input type="text" class="form-control"  name="variants[0][price]">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="variantSalePrice">Giá khuyến mãi</label>
+                                            <input type="text" class="form-control"
+                                                name="variants[0][sale_price]">
+                                        </div>
                                 </div>
-
-                                <div class="box-footer">
-                                    <button type="submit" class="btn btn-primary">Thêm mới</button>
-                                </div>
+                                <button type="button" onclick="addVariant()">Add Variant</button>
                             </div>
-                        </form>
+                            <!-- Container để thêm các trường dữ liệu của các biến thể sản phẩm -->
+                            {{-- <button type="button" class="btn btn-success" onclick="addVariant()">Thêm biến thể</button> --}}
+
+
+                            <div class="form-group">
+                                <label for="exampleInputEmail1">FEATURED PRODUCTS</label>
+                                <input type="checkbox" id="exampleInputEmail1" name="stock" value="1">
+                            </div>
+
+                            <div class="box-footer">
+                                <button type="submit" class="btn btn-primary">Thêm mới</button>
+                            </div>
                     </div>
-
-
-                    <!-- /.box -->
-
+                    </form>
                 </div>
+
+
                 <!-- /.box -->
 
-            </section>
-            <!-- /.content -->
         </div>
+        <!-- /.box -->
+
+        </section>
         <!-- /.content -->
+    </div>
+    <!-- /.content -->
     </div>
 @endsection
 @section('checkEditor-js')
@@ -224,30 +227,29 @@
             }
         }
     </script>
-    <script>
-        let variantCount = 1;
+ <script>
+    let variantIndex = 1;
 
-        document.getElementById('addVariant').addEventListener('click', function() {
-            const container = document.getElementById('variantContainer');
-            const newVariant = `
-            <div class="variant-fields">
-                <div class="form-group">
-                    <label for="variantSize${variantCount}">Kích thước</label>
-                    <input type="text" class="form-control" id="variantSize${variantCount}" name="variants[${variantCount}][size]">
-                </div>
-                <div class="form-group">
-                    <label for="variantPrice${variantCount}">Giá</label>
-                    <input type="text" class="form-control" id="variantPrice${variantCount}" name="variants[${variantCount}][price]">
-                </div>
-                <div class="form-group">
-                    <label for="variantSalePrice${variantCount}">Giá khuyến mãi</label>
-                    <input type="text" class="form-control" id="variantSalePrice${variantCount}" name="variants[${variantCount}][sale_price]">
-                </div>
-            </div>
+    function addVariant() {
+        const variantsDiv = document.getElementById('variants');
+        const variantDiv = document.createElement('div');
+        variantDiv.innerHTML = `
+        <div id="form-group">
+                                            <label for="variantSize">Kích thước</label>
+                                            <input type="text" class="form-control" name="variants[${variantIndex}][size]">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="variantPrice">Giá</label>
+                                            <input type="text" class="form-control" name="variants[${variantIndex}][price]">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="variantSalePrice">Giá khuyến mãi</label>
+                                            <input type="text" class="form-control" name="variants[${variantIndex}][sale_price]"
+                                        </div>
         `;
-            container.insertAdjacentHTML('beforeend', newVariant);
-            variantCount++;
-        });
-    </script>
+        variantsDiv.appendChild(variantDiv);
+        variantIndex++;
+    }
+</script>
 
 @endsection

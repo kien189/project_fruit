@@ -150,11 +150,8 @@
 
                                 <div>
                                     @foreach ($product->variants as $variant)
-                                        <button class="p-2 border rounded-pill  " type="submit" class="me-3"
-                                            name="size" value="{{ $variant->size }}"
-                                            @if ($selectedVariant->size == $variant->size) style="background-color: #edeeef;" @endif>
-                                            {{ $variant->size }}
-                                        </button>
+                                        <input class="p-2 border rounded-pill  " type="submit" class="me-3"
+                                            name="size" value="{{ $variant->size }}">
                                     @endforeach
                                 </div>
                             </form>

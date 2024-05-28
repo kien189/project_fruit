@@ -102,7 +102,7 @@
                 <!-- /.box -->
             </div>
             <!-- /.box -->
-            <div class="text-center "> {{ $products->links('pagination::bootstrap-4') }}</div>
+            {{-- <div class="text-center "> {{ $products->links('pagination::bootstrap-4') }}</div> --}}
             <div>
                 <a href="{{ route('product.trash') }}" class="btn btn-danger "> <i
                         class="fa-solid fa-trash-can-arrow-up "></i> Thùng rác</a>
